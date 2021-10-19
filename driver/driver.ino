@@ -77,6 +77,19 @@ void printResult()
 
 void loop()
 {
+//  need to change this to the implemented of the pseudocode:
+//#include "TouchScreen.h" -> https://github.com/adafruit/Adafruit_TouchScreen/blob/master/examples/touchscreendemo/touchscreendemo.ino
+//600 ohms across X pins, 300 ohms across Y pins
+//
+//
+//array of points
+//
+//if pressure (z value) >= min threshold:
+//   clear array
+//   record the x and y points in an array at an interval of every 10-20 ms (trial)
+//else if pressure < min threshold:
+//   recognize the gesture based on the points stored in the array
+
   for (gesture = 0; gesture < nTemplates; gesture++)
   {
     Serial.println();

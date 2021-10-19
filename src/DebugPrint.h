@@ -63,6 +63,7 @@ using namespace std;
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 //#include <cstdio>
 
 using namespace std;
