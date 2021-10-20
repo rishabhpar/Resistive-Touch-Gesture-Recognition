@@ -21,9 +21,12 @@ void loop(void) {
   // ts.pressureThreshhold
   uint16_t pressure = ts.pressure();
   if (pressure > 200 && pressure < 1000) {
-     Serial.print("X = "); Serial.print(ts.readTouchX());
-     Serial.print("\tY = "); Serial.print(ts.readTouchY());
-     Serial.print("\tPressure = "); Serial.println(pressure);
+     //Serial.print("X = "); 
+     Serial.print(ts.readTouchX());
+     Serial.print(",");
+     //Serial.print("\tY = "); 
+     Serial.print(ts.readTouchY());
+     //Serial.print("\tPressure = "); Serial.println(pressure);
   }
 
   delay(100);
