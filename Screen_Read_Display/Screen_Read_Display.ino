@@ -1,55 +1,30 @@
+#include "TouchScreen.h"
+
 // Pin connection definitions
-#define x_p  A0 // A0
-#define x_n  A1 // A1
-#define y_p  A3 // A3
-#define y_n  A4 // A4
+#define x_p  26 // A0
+#define x_n  4 // A1
+#define y_p  25 // A3
+#define y_n  15 // A4
 
-uint32_t read_x_coord(void);
-uint32_t read_y_coord(void);
+TouchScreen ts = TouchScreen(x_p, y_p, x_n, y_n, 600);
 
-void setup() {
-  // put your setup code here, to run once:
+void setup(void) {
   Serial.begin(9600);
-  //Serial.print("\nStarting setup\n");
-
-  pinMode(y_p,INPUT);
-  pinMode(y_n,INPUT);  
-  //digitalWrite(y_n,LOW);
-
-  pinMode(x_p,OUTPUT);
-  digitalWrite(x_p,LOW);
-  pinMode(x_n,OUTPUT);
-  digitalWrite(x_n,HIGH);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly: 
-  Serial.print(read_x_coord());
-  Serial.print(",");
-  Serial.print(read_y_coord());
-  Serial.print("\n");
-  delay(5);
-}
+void loop(void) {
+  // a point object holds x y and z coordinates
+  TSPoint p = ts.getPoint();
+  
+  // we have some minimum pressure we consider 'valid'
+  // pressure of 0 means no pressing!
+  // ts.pressureThreshhold
+  uint16_t pressure = ts.pressure();
+  if (pressure > 200 && pressure < 1000) {
+     Serial.print("X = "); Serial.print(ts.readTouchX());
+     Serial.print("\tY = "); Serial.print(ts.readTouchY());
+     Serial.print("\tPressure = "); Serial.println(pressure);
+  }
 
-uint32_t read_x_coord(void) {
-  pinMode(y_p,INPUT);
-  pinMode(y_n,INPUT);  
-  //digitalWrite(y_n,LOW);
-
-  pinMode(x_p,OUTPUT);
-  digitalWrite(x_p,LOW);
-  pinMode(x_n,OUTPUT);
-  digitalWrite(x_n,HIGH);
-  return analogRead(y_n);
-}
-uint32_t read_y_coord(void) {
-  pinMode(x_p,INPUT);
-  pinMode(x_n,INPUT);  
-  //digitalWrite(y_n,LOW);
-
-  pinMode(y_p,OUTPUT);
-  digitalWrite(y_p,LOW);
-  pinMode(y_n,OUTPUT);
-  digitalWrite(y_n,HIGH);
-  return analogRead(x_n);
+  delay(100);
 }
