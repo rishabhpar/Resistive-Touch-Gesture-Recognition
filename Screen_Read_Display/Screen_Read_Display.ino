@@ -22,6 +22,8 @@ void setup() {
   digitalWrite(x_n,HIGH);
 }
 
+
+
 void loop() {
   // put your main code here, to run repeatedly: 
   Serial.print(read_x_coord());
