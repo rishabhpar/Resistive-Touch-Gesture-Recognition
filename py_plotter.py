@@ -5,25 +5,20 @@
 # Save data into a csv file
 ############
 
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib import style
-
 import serial
 import numpy as np
 
-
-
-
 def captureSerialData():
-    sample_rate = 200 #hertz
-    time = 4 #seconds
-    sampleSize = sample_rate * time
+    #sample_rate = 10 #hertz
+    #time = 4 #seconds
+    #sampleSize = sample_rate * time
+    sampleSize = 32
     acc = np.zeros((sampleSize, 2), dtype = float)
 
-    port = '/dev/tty.usbmodem101'
+    port = '/dev/tty.usbserial-0001'
     print(acc)
     arduino = serial.Serial(port,9600)
+    data = arduino.readline()
     arduino.flushInput()
     print('Starting capture')
 
@@ -31,7 +26,7 @@ def captureSerialData():
         print('inside try')
         for i in range(sampleSize):
             data = arduino.readline()
-            #print(data)
+            print(data)
             Data = data[:-1].split(b',')
             acc[i,0] = int(float(Data[0]))
             acc[i,1] = int(float(Data[1]))
@@ -45,5 +40,5 @@ def captureSerialData():
 
 if __name__ == '__main__':
     accData = captureSerialData()
-    plt.plot(accData)
-    np.savetxt('point_touches.csv', accData, delimiter=',', fmt='%d')
+    #plt.plot(accData)
+    np.savetxt('Check_Circle_TRIAL1.csv', accData, delimiter=',', fmt='%d')

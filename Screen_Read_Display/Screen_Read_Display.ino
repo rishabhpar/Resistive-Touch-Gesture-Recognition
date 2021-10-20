@@ -26,8 +26,9 @@ void loop(void) {
      Serial.print(",");
      //Serial.print("\tY = "); 
      Serial.print(ts.readTouchY());
+     Serial.print("\n");
      //Serial.print("\tPressure = "); Serial.println(pressure);
   }
 
-  delay(100);
+  delay(50);
 }
