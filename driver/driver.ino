@@ -26,6 +26,8 @@ int downSample;
 const uint16_t num_of_elements = 64;
 CircularBuffer<int, num_of_elements> inputGesture; 
 
+void init
+
 void setup()
 {
   Serial.begin(115200);
@@ -60,25 +62,11 @@ void recognizePoints()
   dollar.recognize();
 }
 
-void printResult()
-{
-  Serial.print("template: ");
-  Serial.print(dollar.getIndex());
-
-  Serial.print(" (");
-  Serial.print(dollar.getName());
-  Serial.print(")");
-
-  Serial.print(", score: ");
-  Serial.print(dollar.getScore());
-  Serial.println("%");
-}
-
 void loop()
 {
   uint16_t pressure = ts.pressure();
 
-  if (pressure > 200 && pressure < 1000 ) { // is pressed -> collect points
+  if (pressure > 200 && pressure < 2000 ) { // is pressed -> collect points
     uint16_t x = ts.readTouchX();
     uint16_t y = ts.readTouchY();
 
@@ -88,11 +76,13 @@ void loop()
     inputGesture.push(y);
     // if (inputGesture.isFull()) { // if 32 points have been collected -> try classifying
     //   recognizePoints();
-    //   printResult();
+    //   if (dollar.getScore() > 90){
+    //     Serial.print(dollar.getName()); Serial.print("\n");
+    //   }
     // }
   } else if (!inputGesture.isEmpty()) { // unpressed and contains values to classify -> classify
       recognizePoints();
-      printResult();
+      Serial.print(dollar.getName()); Serial.print("\n");
       inputGesture.clear();
   }
 
