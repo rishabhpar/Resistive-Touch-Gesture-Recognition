@@ -21,7 +21,7 @@ GestureProcessing::update(int x, int y, bool relative)
 
     added = process(GESTURE_POINT, x, y, relative);
 
-    DEBUG_PRINT(".");
+    // DEBUG_PRINT(".");
 
     if (added)
       t0 = t1;
@@ -31,7 +31,7 @@ GestureProcessing::update(int x, int y, bool relative)
   else
   {
     t0 = t1;
-    DEBUG_PRINT("x");
+    // DEBUG_PRINT("x");
 
     return added;
   }
@@ -67,7 +67,7 @@ GestureProcessing::process(int c, int x, int y, bool relative)
   switch (command)
   {
     case GESTURE_START:
-      DEBUG_PRINTLN("gesture start");
+      // DEBUG_PRINTLN("gesture start");
       gx = 0;
       gy = 0;
       nSamples = 0;
@@ -92,21 +92,21 @@ GestureProcessing::process(int c, int x, int y, bool relative)
         if ( d < minDistance )
         {
           //					nSamples -= 2;
-          DEBUG_PRINT("d");
+          // DEBUG_PRINT("d");
           accumulate(gx, gy);
 
           return false;
         }
         else if ( dt < dtPoints )
         {
-          DEBUG_PRINT("t");
+          // DEBUG_PRINT("t");
           accumulate(gx, gy);
 
           return false;
         }
         else
         {
-          DEBUG_PRINT(".");
+          // DEBUG_PRINT(".");
           add(gx, gy);
 
           return true;
@@ -123,12 +123,12 @@ GestureProcessing::process(int c, int x, int y, bool relative)
       break;
 
     case GESTURE_END:
-      DEBUG_PRINTLN("\n");
-      DEBUG_PRINT("gesture end (");
-      DEBUG_PRINT(nSamples);
-      DEBUG_PRINT(" values in buffer w/ ");
-      DEBUG_PRINT(overflow);
-      DEBUG_PRINTLN(" overflows");
+      // DEBUG_PRINTLN("\n");
+      // DEBUG_PRINT("gesture end (");
+      // DEBUG_PRINT(nSamples);
+      // DEBUG_PRINT(" values in buffer w/ ");
+      // DEBUG_PRINT(overflow);
+      // DEBUG_PRINTLN(" overflows");
 
       return false;
       break;

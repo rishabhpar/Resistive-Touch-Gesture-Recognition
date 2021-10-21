@@ -1,33 +1,30 @@
-/*
-  MicroDollar: $1 Gesture Recognizer C++ port with optimizations for embedded hardware
-  This sketch demonstrates how to run the template-based $1 gesture recognizer on
-  resource-constrained microcontrollers, such as the ESP8266, Arduino Uno, and others.
-  The number of templates that can be loaded depend on available memory, as they are loaded into dynamic memory.
-  If dynamic memory is almost full (e.g., >80%), memory can get corrupted by use of local variables.
-  Initially developed for:
-  SpeckleSense/SpeckleEye (http://specklesense.media.mit.edu, http://specklesense.org)
-  - SpeckleSense: Fast, Precise, Low-cost and Compact Motion Sensing using Laser Speckle (https://doi.org/10.1145/2047196.2047261)
-  - SpeckleEye: Gestural Interaction for Embedded Electronics in Ubiquitous Computing (https://doi.org/10.1145/2212776.2223782)
-  Based on:
-  $1 Unistroke Recognizer (http://depts.washington.edu/madlab/proj/dollar/)
-  - Gestures without libraries, toolkits or training: a $1 recognizer for user interface prototypes (https://doi.org/10.1145/1294211.1294238)
-  Author: Alex Olwal (www.olwal.com)
-*/
+#include "TouchScreen.h"
 
-#include "data/template_data_int_normalized_64_4.h"
-using namespace TemplateDataIntNormalized64_4;
+#include "data/template_data_int_normalized_64_2.h"
+using namespace TemplateDataIntNormalized64_2;
 
 #include <DebugPrint.h>
 #include <GestureProcessing.h>
 #include <MicroDollar.h>
 #include <Recognizer.h>
 #include <Templates.h>
+#include <CircularBuffer.h>
+
+// Pin connection definitions
+#define x_p  26 
+#define x_n  4 
+#define y_p  25 
+#define y_n  15 
 
 MicroDollar dollar;
+TouchScreen ts = TouchScreen(x_p, y_p, x_n, y_n, 600);
 
 int addedPoints = 0;
 int gesture;
 int downSample;
+
+const uint16_t num_of_elements = 64;
+CircularBuffer<int, num_of_elements> inputGesture; 
 
 void setup()
 {
@@ -36,15 +33,23 @@ void setup()
   dollar.init(samplePoints, nSamplePoints, samplesNormalized, sampleNames, nTemplates);
 }
 
-void recognizePoints(int * points, int nPoints, int downSample)
+void recognizePoints()
 {
   addedPoints = 0;
   int increment = 1;
 
-  for (int i = 0; i < nPoints; i = i += 2 * downSample)
+  while (inputGesture.available() > 0){ // pad the remaining with the last x,y coordinate
+    int first = inputGesture[inputGesture.size() - 2];
+    int second = inputGesture.last();
+
+    inputGesture.push(first);
+    inputGesture.push(second);
+  }
+
+  for (int i = 0; i < num_of_elements; i = i += 2)
   {
-    int x = points[i];
-    int y = points[i + 1];
+    int x = inputGesture[i];
+    int y = inputGesture[i + 1];
 
     bool added = dollar.update(x, y);
 
@@ -57,12 +62,6 @@ void recognizePoints(int * points, int nPoints, int downSample)
 
 void printResult()
 {
-  Serial.print("Using ");
-  Serial.print(addedPoints);
-  Serial.print(" of ");
-  Serial.print(nSamplePoints[gesture] / 2);
-  Serial.print(" points, ");
-
   Serial.print("template: ");
   Serial.print(dollar.getIndex());
 
@@ -77,30 +76,25 @@ void printResult()
 
 void loop()
 {
-//  need to change this to the implemented of the pseudocode:
-//#include "TouchScreen.h" -> https://github.com/adafruit/Adafruit_TouchScreen/blob/master/examples/touchscreendemo/touchscreendemo.ino
-//600 ohms across X pins, 300 ohms across Y pins
-//
-//
-//array of points
-//
-//if pressure (z value) >= min threshold:
-//   clear array
-//   record the x and y points in an array at an interval of every 10-20 ms (trial)
-//else if pressure < min threshold:
-//   recognize the gesture based on the points stored in the array
+  uint16_t pressure = ts.pressure();
 
-  for (gesture = 0; gesture < nTemplates; gesture++)
-  {
-    Serial.println();
-    Serial.print("Gesture: ");
-    Serial.println(gesture);
-    
-    for (downSample = 1; downSample < 4; downSample++)
-    {
-      recognizePoints(samplePoints[gesture], nSamplePoints[gesture], downSample);
+  if (pressure > 200 && pressure < 1000 ) { // is pressed -> collect points
+    uint16_t x = ts.readTouchX();
+    uint16_t y = ts.readTouchY();
+
+    Serial.print(x); Serial.print(","); Serial.print(y); Serial.print("\n");
+
+    inputGesture.push(x);
+    inputGesture.push(y);
+    // if (inputGesture.isFull()) { // if 32 points have been collected -> try classifying
+    //   recognizePoints();
+    //   printResult();
+    // }
+  } else if (!inputGesture.isEmpty()) { // unpressed and contains values to classify -> classify
+      recognizePoints();
       printResult();
-      delay(1000);
-    }
+      inputGesture.clear();
   }
+
+  delay(50);
 }

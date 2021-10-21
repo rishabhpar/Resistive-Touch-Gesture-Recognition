@@ -35,14 +35,14 @@ MicroDollar::printResult()
   DEBUG_PRINT(score);
   DEBUG_PRINT(" ");
 
-  if (index >= 0 && index < nTemplates)
-  {
-    DEBUG_PRINTLN(sampleNames[index]);
-  }
-  else
-  {
-    DEBUG_PRINTLN("");
-  }
+  // if (index >= 0 && index < nTemplates)
+  // {
+  //   DEBUG_PRINTLN(sampleNames[index]);
+  // }
+  // else
+  // {
+  //   DEBUG_PRINTLN("");
+  // }
 }
 
 void

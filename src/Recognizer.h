@@ -207,23 +207,23 @@ void Recognizer<T>::loadTemplateNormalized(T * points, int n, int index)
 template <class T>
 void print(const char * name, T * src, int nSrc)
 {
-  DEBUG_PRINT(name);
-  DEBUG_PRINT(" (");
-  DEBUG_PRINT(nSrc);
-  DEBUG_PRINTLN(" values):");
+  // DEBUG_PRINT(name);
+  // DEBUG_PRINT(" (");
+  // DEBUG_PRINT(nSrc);
+  // DEBUG_PRINTLN(" values):");
 
   for (int i = 0; i < nSrc; i += 2, src += 2)
   {
-    DEBUG_PRINT(src[0]);
-    DEBUG_PRINT(" ");
-    DEBUG_PRINT(src[1]);
+    // DEBUG_PRINT(src[0]);
+    // DEBUG_PRINT(" ");
+    // DEBUG_PRINT(src[1]);
 
-    if (i < nSrc - 2)
-      DEBUG_PRINT(", ");
+    // if (i < nSrc - 2)
+      // DEBUG_PRINT(", ");
   }
 
-  DEBUG_PRINTLN("");
-  DEBUG_PRINTLN("");
+  // DEBUG_PRINTLN("");
+  // DEBUG_PRINTLN("");
 
 }
 
@@ -261,18 +261,18 @@ int Recognizer<T>::resample(T * src, int nSrc, T * dst, int nDst)
 
     d = getDistance(p0, p1);
 
-    DEBUG_PRINT(i);
-    DEBUG_PRINT(": ");
-    DEBUG_PRINT(d);
-    DEBUG_PRINT("\t(");
-    DEBUG_PRINT(p0[X]);
-    DEBUG_PRINT(", ");
-    DEBUG_PRINT(p0[Y]);
-    DEBUG_PRINT(") (");
-    DEBUG_PRINT(p1[X]);
-    DEBUG_PRINT(", ");
-    DEBUG_PRINT(p1[Y]);
-    DEBUG_PRINTLN(")");
+    // DEBUG_PRINT(i);
+    // DEBUG_PRINT(": ");
+    // DEBUG_PRINT(d);
+    // DEBUG_PRINT("\t(");
+    // DEBUG_PRINT(p0[X]);
+    // DEBUG_PRINT(", ");
+    // DEBUG_PRINT(p0[Y]);
+    // DEBUG_PRINT(") (");
+    // DEBUG_PRINT(p1[X]);
+    // DEBUG_PRINT(", ");
+    // DEBUG_PRINT(p1[Y]);
+    // DEBUG_PRINTLN(")");
 
     wasResampled = false;
 
@@ -296,10 +296,10 @@ int Recognizer<T>::resample(T * src, int nSrc, T * dst, int nDst)
       resampledP[X] = dst[X];
       resampledP[Y] = dst[Y];
 
-      DEBUG_PRINT(dst[X]);
-      DEBUG_PRINT(" ");
-      DEBUG_PRINT(dst[Y]);
-      DEBUG_PRINTLN(",");
+      // DEBUG_PRINT(dst[X]);
+      // DEBUG_PRINT(" ");
+      // DEBUG_PRINT(dst[Y]);
+      // DEBUG_PRINTLN(",");
 
       dst += 2; //advance pointer
 
@@ -317,7 +317,7 @@ int Recognizer<T>::resample(T * src, int nSrc, T * dst, int nDst)
     dst[Y] = src[nSrc - 1];
   }
 
-  print("end of resample", dst, nDst);
+  // print("end of resample", dst, nDst);
 
   return resampled;
 }
@@ -353,19 +353,19 @@ void Recognizer<T>::normalizePath(T * src, int nSrc, T * dst, int nDst)
 {
   resample(src, nSrc, dst, nDst);
 
-  print("resampled", dst, nDst);
+  // print("resampled", dst, nDst);
 
   rotateToZero(dst, nDst);
 
-  print("rotated to zero", dst, nDst);
+  // print("rotated to zero", dst, nDst);
 
   scaleToSquare(dst, nDst);
 
-  print("scaled to square", dst, nDst);
+  // print("scaled to square", dst, nDst);
 
   translateToOrigin(dst, nDst);
 
-  print("translated to origin", dst, nDst);
+  // print("translated to origin", dst, nDst);
 
 }
 
@@ -558,7 +558,7 @@ void Recognizer<T>::recognize(T * src, int nSrc, int * index, float * score, flo
 
   int bestMatch = -1;
 
-  DEBUG_PRINTLN("---------");
+  // DEBUG_PRINTLN("---------");
 
   for (int i = 0; i < templates.nLoaded; i++)
   {
@@ -574,11 +574,11 @@ void Recognizer<T>::recognize(T * src, int nSrc, int * index, float * score, flo
 
     }
 
-    DEBUG_PRINT("template: ");
-    DEBUG_PRINT(i);
-    DEBUG_PRINT(" = ");
-    DEBUG_PRINT(distance);
-    DEBUG_PRINTLN("");
+    // DEBUG_PRINT("template: ");
+    // DEBUG_PRINT(i);
+    // DEBUG_PRINT(" = ");
+    // DEBUG_PRINT(distance);
+    // DEBUG_PRINTLN("");
 
   }
 
