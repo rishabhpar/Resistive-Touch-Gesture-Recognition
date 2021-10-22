@@ -26,17 +26,15 @@ int downSample;
 const uint16_t num_of_elements = 64;
 CircularBuffer<int, num_of_elements> inputGesture; 
 
-void init
+void Capture_new_gesture(void);
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
 
   dollar.init(samplePoints, nSamplePoints, samplesNormalized, sampleNames, nTemplates);
 }
 
-void recognizePoints()
-{
+void recognizePoints() {
   addedPoints = 0;
   int increment = 1;
 
@@ -62,11 +60,10 @@ void recognizePoints()
   dollar.recognize();
 }
 
-void loop()
-{
+void loop() {
   uint16_t pressure = ts.pressure();
 
-  if (pressure > 200 && pressure < 2000 ) { // is pressed -> collect points
+  if (pressure > 200 && pressure < 2500 ) { // is pressed -> collect points
     uint16_t x = ts.readTouchX();
     uint16_t y = ts.readTouchY();
 
@@ -82,9 +79,36 @@ void loop()
     // }
   } else if (!inputGesture.isEmpty()) { // unpressed and contains values to classify -> classify
       recognizePoints();
-      Serial.print(dollar.getName()); Serial.print("\n");
+      String classification = dollar.getName();      
+      Serial.print(classification); Serial.print("\n");
+      if(classification.equals("S")) {
+        Serial.println("Enter new gesture");
+        Capture_new_gesture();
+      }      
       inputGesture.clear();
   }
 
   delay(50);
+}
+
+/* Reads new gesture and adds to classification*/
+void Capture_new_gesture(void) {
+  int i = 0;
+  while(i < 64) {
+    uint16_t pressure = ts.pressure();
+    if(pressure < 3000) {
+      Serial.print(i);
+      Serial.print(". ");
+      uint16_t x = ts.readTouchX();
+      uint16_t y = ts.readTouchY();
+      Serial.print(x); Serial.print(","); Serial.print(y); Serial.print("\n");
+      custom[i] = x;
+      custom[i+1] = y;
+      i += 2;
+    }
+    delay(50);
+  }
+  Serial.println("Finished custom");
+  // Wait for user to finish
+  while(ts.pressure() < 2500);
 }

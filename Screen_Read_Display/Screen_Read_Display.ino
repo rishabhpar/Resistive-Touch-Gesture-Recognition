@@ -20,7 +20,7 @@ void loop(void) {
   // pressure of 0 means no pressing!
   // ts.pressureThreshhold
   uint16_t pressure = ts.pressure();
-  if (pressure > 200 && pressure < 1000) {
+  if (pressure > 200 && pressure < 2500) {
      //Serial.print("X = "); 
      Serial.print(ts.readTouchX());
      Serial.print(",");

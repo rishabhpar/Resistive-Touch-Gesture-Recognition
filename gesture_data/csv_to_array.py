@@ -1,6 +1,6 @@
 import csv
 data = []
-with open('Check_Touch_Trial1.csv', 'r') as csvfile:
+with open('S_INPUT_TRIAL1.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         row_pair = [int(val) for val in row]
