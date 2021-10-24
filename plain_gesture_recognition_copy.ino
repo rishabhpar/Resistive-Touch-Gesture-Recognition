@@ -10,16 +10,10 @@ using namespace TemplateDataIntNormalized64_2;
 #include <Templates.h>
 #include <CircularBuffer.h>
 
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
-
-
-#define WIFI 1
-
 // Pin connection definitions
-#define x_p  4 
-#define x_n  33   // X_N Must be analog
-#define y_p  32   // Y_P Must be analog
+#define x_p  26 
+#define x_n  4 
+#define y_p  25 
 #define y_n  15 
 
 MicroDollar dollar;
@@ -32,38 +26,12 @@ int downSample;
 const uint16_t num_of_elements = 64;
 CircularBuffer<int, num_of_elements> inputGesture; 
 
-/* WIFI CONNECTIONS */
-const char* ssid = "utexas-iot";
-const char* password =  "9943599082525808";
-const char* host = "maker.ifttt.com";
-const int httpsPort = 443;
-WiFiClientSecure client;
-
-/* Internal methods*/
 void Capture_new_gesture(void);
-void Play_Music(void);
-void Pause_Music(void);
 
 void setup() {
   Serial.begin(115200);
 
   dollar.init(samplePoints, nSamplePoints, samplesNormalized, sampleNames, nTemplates);
-
-/* WIFI CONNECTION */
-#if WIFI
-  Serial.println();
-  Serial.print("connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-#endif
 }
 
 void recognizePoints() {
@@ -94,6 +62,7 @@ void recognizePoints() {
 
 void loop() {
   uint16_t pressure = ts.pressure();
+
   if (pressure > 200 && pressure < 2500 ) { // is pressed -> collect points
     uint16_t x = ts.readTouchX();
     uint16_t y = ts.readTouchY();
@@ -112,92 +81,10 @@ void loop() {
       recognizePoints();
       String classification = dollar.getName();      
       Serial.print(classification); Serial.print("\n");
-      if(classification.equals("circleCCW")) {
-        Play_Music();
-      } else if(classification.equals("check")) {
-        Pause_Music();
-      }
       inputGesture.clear();
   }
 
   delay(50);
-}
-
-void Play_Music(void) {
-  client.setInsecure();
-  Serial.print("connecting to ");
-  Serial.println(host);
-
-  if (!client.connect(host, httpsPort)) {
-    Serial.println("connection failed");
-    return;
-  } else {
-    Serial.println("Connected");
-  }
-
-  String url = "/trigger/ESP32-Gesture-Play/with/key/bCeqREdaNnm2WIpAMQpHlI";
-
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "User-Agent: BuildFailureDetectorESP32\r\n" +
-               "Connection: close\r\n\r\n");
-
-
-  Serial.println("request sent");
-
-  while (client.connected()) {
-    String line = client.readStringUntil('\n');
-    if (line == "\r") {
-      Serial.println("headers received");
-      break;
-    }
-  }
-
-  String line = client.readStringUntil('\n');
-
-  Serial.println("reply was:");
-  Serial.println("==========");
-  Serial.println(line);
-  Serial.println("==========");
-  Serial.println("closing connection");
-}
-
-void Pause_Music(void) {
-  client.setInsecure();
-  Serial.print("connecting to ");
-  Serial.println(host);
-
-  if (!client.connect(host, httpsPort)) {
-    Serial.println("connection failed");
-    return;
-  } else {
-    Serial.println("Connected");
-  }
-
-  String url = "/trigger/ESP32-Gesture-Pause/with/key/bCeqREdaNnm2WIpAMQpHlI";
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "User-Agent: BuildFailureDetectorESP32\r\n" +
-               "Connection: close\r\n\r\n");
-
-
-  Serial.println("request sent");
-
-  while (client.connected()) {
-    String line = client.readStringUntil('\n');
-    if (line == "\r") {
-      Serial.println("headers received");
-      break;
-    }
-  }
-
-  String line = client.readStringUntil('\n');
-
-  Serial.println("reply was:");
-  Serial.println("==========");
-  Serial.println(line);
-  Serial.println("==========");
-  Serial.println("closing connection");
 }
 
 /* Reads new gesture and adds to classification*/
