@@ -260,7 +260,7 @@ void likeCurrentlyPlaying(CurrentlyPlaying currentlyPlaying){
 //    }
 //    delay(50);
 //  }
-//  Serial.println("Finished custom");
+//  Serial.println("Finishe+d custom");
 //
 //  /* Reinit recognition to upload custom gesture */
 //  
