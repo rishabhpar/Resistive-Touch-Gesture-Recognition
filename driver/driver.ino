@@ -1,6 +1,7 @@
 #include "TouchScreen.h"
 
 #include "data/template_data_int_normalized_64_2.h"
+#include "data/secrets.h"
 using namespace TemplateDataIntNormalized64_2;
 
 #include <DebugPrint.h>
@@ -13,7 +14,6 @@ using namespace TemplateDataIntNormalized64_2;
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
-
 
 #include <SpotifyArduino.h>
 #include <ArduinoJson.h>
@@ -41,16 +41,12 @@ const uint16_t num_of_elements = 64;
 CircularBuffer<int, num_of_elements> inputGesture; 
 
 /* WIFI CONNECTIONS */
-const char* ssid = "utexas-iot";
-const char* password =  "9943599082525808";
 const char* host = "maker.ifttt.com";
 const int httpsPort = 443;
 WiFiClientSecure client;
 
 /* SPOTIFY CONNECTIONS */
-char clientId[] = "735b983b9cb6498f96476efc4f18e517";     // Your client ID of your spotify APP
-char clientSecret[] = "fc9688121c9e4bdf929f0c5d6760865b"; // Your client Secret of your spotify APP (Do Not share this!)
-SpotifyArduino spotify(client, clientId, clientSecret, SPOTIFY_REFRESH_TOKEN);
+SpotifyArduino spotify(client, SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN);
 
 unsigned long delayBetweenRequests = 60000; // Time between requests (1 minute)
 unsigned long requestDueTime;               //time when request due
@@ -69,8 +65,8 @@ void setup() {
 #if WIFI
   Serial.println();
   Serial.print("connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
+  Serial.println(SECRET_SSID);
+  WiFi.begin(SECRET_SSID, SECRET_PASS);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -83,12 +79,9 @@ void setup() {
   client.setCACert(spotify_server_cert);
 
   Serial.println("Refreshing Access Tokens");
-  if (!spotify.refreshAccessToken())
-  {
+  if (!spotify.refreshAccessToken()){
       Serial.println("Failed to get access tokens");
   }
-
-  
 #endif
 }
 
@@ -128,12 +121,6 @@ void loop() {
 
     inputGesture.push(x);
     inputGesture.push(y);
-    // if (inputGesture.isFull()) { // if 32 points have been collected -> try classifying
-    //   recognizePoints();
-    //   if (dollar.getScore() > 90){
-    //     Serial.print(dollar.getName()); Serial.print("\n");
-    //   }
-    // }
   } else if (!inputGesture.isEmpty()) { // unpressed and contains values to classify -> classify
       recognizePoints();
       String classification = dollar.getName();      
@@ -173,9 +160,7 @@ void Play_Music(void) {
   if (!client.connect(host, httpsPort)) {
     Serial.println("connection failed");
     return;
-  } else {
-    Serial.println("Connected");
-  }
+  } 
 
   String url = "/trigger/ESP32-Gesture-Play/with/key/bCeqREdaNnm2WIpAMQpHlI";
 
@@ -183,7 +168,6 @@ void Play_Music(void) {
                "Host: " + host + "\r\n" +
                "User-Agent: BuildFailureDetectorESP32\r\n" +
                "Connection: close\r\n\r\n");
-
 
   Serial.println("request sent");
 
@@ -212,8 +196,6 @@ void Pause_Music(void) {
   if (!client.connect(host, httpsPort)) {
     Serial.println("connection failed");
     return;
-  } else {
-    Serial.println("Connected");
   }
 
   String url = "/trigger/ESP32-Gesture-Pause/with/key/bCeqREdaNnm2WIpAMQpHlI";
