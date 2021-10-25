@@ -30,7 +30,7 @@ namespace TemplateDataIntNormalized64_2
 
 	const char * sampleNames[] = 
 	{
-		"circleCCW", "check", "S", "custom"
+		"o", "c", "s", "1"
 	};
 	
 	int nTemplates = 4; //N_TEMPLATES;

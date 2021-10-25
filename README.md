@@ -9,3 +9,6 @@ so:
 3. put src/MicroDollar.h and src/MicroDollar.cpp in /home/user_name/Arduino/libraries/MicroDollar folder
 4. put src/Recognizer.h in /home/user_name/Arduino/libraries/Recognizer folder
 5. put src/Templates.h in /home/user_name/Arduino/libraries/Templates folder
+
+
+spotify-arduino-api-main allows us to connect with APIs from spotify. source: https://github.com/witnessmenow/spotify-api-arduino
