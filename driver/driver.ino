@@ -83,6 +83,10 @@ void setup() {
       Serial.println("Failed to get access tokens");
   }
 #endif
+
+///* DEEP SLEEP CONFIG */
+//  pinMode(GPIO_NUM_4, INPUT);
+//  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4,1); //1 = High, 0 = Low
 }
 
 void recognizePoints() {
@@ -147,6 +151,10 @@ void loop() {
         }  
       }
       inputGesture.clear();
+    
+//      //Go to sleep now
+//      Serial.println("Going to sleep now");
+//      esp_deep_sleep_start();
   }
 
   delay(50);
