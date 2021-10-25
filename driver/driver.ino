@@ -41,10 +41,8 @@ const uint16_t num_of_elements = 64;
 CircularBuffer<int, num_of_elements> inputGesture; 
 
 /* WIFI CONNECTIONS */
-//const char* ssid = "utexas-iot";
-//const char* password =  "9943599082525808";
-const char* ssid = "imcheatingonmywifi";
-const char* password =  "wu-tanglan";
+const char* ssid = "utexas-iot";
+const char* password =  "9943599082525808";
 const char* host = "maker.ifttt.com";
 const int httpsPort = 443;
 WiFiClientSecure client;
