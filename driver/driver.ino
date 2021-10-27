@@ -84,9 +84,9 @@ void setup() {
   }
 #endif
 
-///* DEEP SLEEP CONFIG */
-//  pinMode(GPIO_NUM_4, INPUT);
-//  esp_sleep_enable_ext0_wakeup(GPIO_NUM_4,1); //1 = High, 0 = Low
+/////* DEEP SLEEP CONFIG */
+//  pinMode(GPIO_NUM_12, INPUT);
+//  esp_sleep_enable_ext0_wakeup(GPIO_NUM_12,1); //1 = High, 0 = Low
 }
 
 void recognizePoints() {
@@ -122,6 +122,8 @@ void loop() {
     uint16_t y = ts.readTouchY();
 
     Serial.print(x); Serial.print(","); Serial.print(y); Serial.print("\n");
+    int buttonState = digitalRead(12);
+    Serial.println(buttonState);
 
     inputGesture.push(x);
     inputGesture.push(y);
