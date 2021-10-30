@@ -95,6 +95,7 @@ class MicroDollar
     
     bool update(int x, int y, bool relative);
     bool update(int x, int y); //assumes absolute
+
 };
 
 #endif

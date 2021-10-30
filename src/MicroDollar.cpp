@@ -116,5 +116,5 @@ MicroDollar::MicroDollar()
 
 MicroDollar::~MicroDollar()
 {
-
+  
 }
