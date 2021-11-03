@@ -30,7 +30,7 @@ using namespace TemplateDataIntNormalized64_2;
 #define SPOTIFY_MARKET "US"
 #define SPOTIFY_REFRESH_TOKEN "AQDFVEEXBRCmN-ld4xxoeouF-ny9WZl0hr_ZYTLzEypWnFJmngtHRLTCiI501YBPVyF9cYYwqf_FEm4FF2PammWlV03bXTVRQZX3tD9ANmj3U1HnHZP-rvZwnp-s3p2j8sE"
 
-MicroDollar dollar;
+MicroDollar* dollar;
 TouchScreen ts = TouchScreen(x_p, y_p, x_n, y_n, 600);
 
 int addedPoints = 0;
@@ -58,8 +58,8 @@ void Pause_Music(void);
 
 void setup() {
   Serial.begin(115200);
-
-  dollar.init(samplePoints, nSamplePoints, samplesNormalized, sampleNames, nTemplates);
+  dollar = new MicroDollar();
+  dollar->init(samplePoints, nSamplePoints, samplesNormalized, sampleNames, nTemplates);
 
 /* WIFI CONNECTION */
 #if WIFI
@@ -106,13 +106,13 @@ void recognizePoints() {
     int x = inputGesture[i];
     int y = inputGesture[i + 1];
 
-    bool added = dollar.update(x, y);
+    bool added = dollar->update(x, y);
 
     if (added)
       addedPoints++;
   }
 
-  dollar.recognize();
+  dollar->recognize();
 }
 
 void loop() {
@@ -129,7 +129,7 @@ void loop() {
     inputGesture.push(y);
   } else if (!inputGesture.isEmpty()) { // unpressed and contains values to classify -> classify
       recognizePoints();
-      String classification = dollar.getName();      
+      String classification = dollar->getName();      
       Serial.print(classification); Serial.print("\n");
       if(classification.equals("o")) {
         Play_Music();
@@ -247,35 +247,38 @@ void likeCurrentlyPlaying(CurrentlyPlaying currentlyPlaying){
 
 //
 ///* Reads new gesture and adds to classification*/
-//void Capture_new_gesture(void) {
-//  int i = 0;
-//  while(i < 64) {
-//    uint16_t pressure = ts.pressure();
-//    if(pressure < 5000) {
-//      Serial.println("----");
-//      Serial.print(custom[i]);
-//      Serial.print(",");
-//      Serial.println(custom[i+1]);
-//      Serial.print(i);
-//      Serial.print(". ");
-//      uint16_t x = ts.readTouchX();
-//      uint16_t y = ts.readTouchY();
-//      Serial.print(x); Serial.print(","); Serial.print(y); Serial.print("\n");
-//      custom[i] = x;
-//      custom[i+1] = y;
-//      Serial.print(custom[i]);
-//      Serial.print(",");
-//      Serial.println(custom[i+1]);
-//      i += 2;
-//    }
-//    delay(50);
-//  }
-//  Serial.println("Finishe+d custom");
-//
-//  /* Reinit recognition to upload custom gesture */
-//  
-//  /*Wait for user to lift finger */
-//  while(ts.pressure() < 2500);
-//  inputGesture.clear();
-//
-//}
+void Capture_new_gesture(void) {
+ int i = 0;
+ while(i < 64) {
+   uint16_t pressure = ts.pressure();
+   if(pressure < 5000) {
+     Serial.println("----");
+     Serial.print(custom[i]);
+     Serial.print(",");
+     Serial.println(custom[i+1]);
+     Serial.print(i);
+     Serial.print(". ");
+     uint16_t x = ts.readTouchX();
+     uint16_t y = ts.readTouchY();
+     Serial.print(x); Serial.print(","); Serial.print(y); Serial.print("\n");
+     custom[i] = x;
+     custom[i+1] = y;
+     Serial.print(custom[i]);
+     Serial.print(",");
+     Serial.println(custom[i+1]);
+     i += 2;
+   }
+   delay(50);
+ }
+ Serial.println("Finished custom");
+
+ /* Reinit recognition to upload custom gesture */
+ 
+ /*Wait for user to lift finger */
+ while(ts.pressure() < 2500);
+ inputGesture.clear();
+ Serial.println("Reinit");
+ delete dollar;
+ dollar = new MicroDollar();
+ dollar->init(samplePoints, nSamplePoints, samplesNormalized, sampleNames, nTemplates);
+}
