@@ -26,11 +26,10 @@ def captureSerialData():
         print('inside try')
         for i in range(sampleSize):
             data = arduino.readline()
-            print(data)
+            print(i)
             Data = data[:-1].split(b',')
             acc[i,0] = int(float(Data[0]))
             acc[i,1] = int(float(Data[1]))
-            print(Data)
         return acc
         arduino.close()
     except Exception as e:
@@ -41,4 +40,4 @@ def captureSerialData():
 if __name__ == '__main__':
     accData = captureSerialData()
     #plt.plot(accData)
-    np.savetxt('Check_Circle_TRIAL1.csv', accData, delimiter=',', fmt='%d')
+    np.savetxt('TRIANGLE_TRIAL1.csv', accData, delimiter=',', fmt='%d')

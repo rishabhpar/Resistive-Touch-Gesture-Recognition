@@ -1,10 +1,10 @@
 #include "TouchScreen.h"
 
 // Pin connection definitions
-#define x_p  26 // A0
-#define x_n  4 // A1
-#define y_p  25 // A3
-#define y_n  15 // A4
+#define x_p  4 
+#define x_n  33   // X_N Must be analog
+#define y_p  32   // Y_P Must be analog
+#define y_n  15 
 
 TouchScreen ts = TouchScreen(x_p, y_p, x_n, y_n, 600);
 
