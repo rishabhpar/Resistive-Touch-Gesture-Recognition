@@ -1,9 +1,6 @@
 #include "TouchScreen.h"
-
 #include "data/template_data_int_normalized_64_2.h"
 #include "data/secrets.h"
-using namespace TemplateDataIntNormalized64_2;
-
 #include <DebugPrint.h>
 #include <GestureProcessing.h>
 #include <MicroDollar.h>
@@ -19,7 +16,9 @@ using namespace TemplateDataIntNormalized64_2;
 #include <ArduinoJson.h>
 #include <SpotifyArduinoCert.h>
 
-#define WIFI 1
+using namespace TemplateDataIntNormalized64_2;
+
+#define WIFI 0
 
 // Pin connection definitions
 #define x_p  4 
@@ -117,18 +116,19 @@ void recognizePoints() {
 
 void loop() {
   uint16_t pressure = ts.pressure();
-  if (pressure > 200 && pressure < 2500 ) { // is pressed -> collect points
+  Serial.println(pressure);
+  if (pressure > 200 && pressure < 5000 ) { // is pressed -> collect points
     uint16_t x = ts.readTouchX();
     uint16_t y = ts.readTouchY();
-
-    Serial.print(x); Serial.print(","); Serial.print(y); Serial.print("\n");
-    int buttonState = digitalRead(12);
-    Serial.println(buttonState);
 
     inputGesture.push(x);
     inputGesture.push(y);
   } else if (!inputGesture.isEmpty()) { // unpressed and contains values to classify -> classify
+      unsigned long start = micros();
       recognizePoints();
+      unsigned long end = micros();
+      unsigned long delta = end - start;
+      Serial.println(delta);
       String classification = dollar->getName();      
       Serial.print(classification); Serial.print("\n");
       if(classification.equals("o")) {
@@ -153,10 +153,6 @@ void loop() {
         }  
       }
       inputGesture.clear();
-    
-//      //Go to sleep now
-//      Serial.println("Going to sleep now");
-//      esp_deep_sleep_start();
   }
 
   delay(50);
